@@ -1,16 +1,26 @@
 const express = require("express")
 const mqtt = require("mqtt")
 const dotenv = require("dotenv")
+const { json } = require("express")
+const { initializeFirebaseApp, sendNotification } = require("./firebase")
+const { handleFeeds } = require("./handlers")
 
 dotenv.config()
+
 const app = express()
 const port = 3000 || process.env.port
 
-let max_temp = 20
-let min_temp = 10
+let max_temp = 40
+let min_temp = 35
 
-let max_hum = 30
+let max_hum = 40
 let min_hum = 10
+
+let server_notification_enambled = true
+
+const notificationTokens = []
+
+initializeFirebaseApp()
 
 const startMqttCLient = () => {
     const url = 'wss://io.adafruit.com'
@@ -18,22 +28,25 @@ const startMqttCLient = () => {
         clean: true,
         connectTimeout: 4000,
         clientId: '0F6YVCKSE7NEQPTNPJW6RVA55P',
-        username: 'shalizxdxd',
+        username: process.env.ADAFRUIT_USERNAME,
         password: process.env.ADAFRUIT_API_KEY,
         reconnectPeriod: 1000
     }
 
+    if (!options.password) {
+        return
+    }
     const client = mqtt.connect(url, options)
 
     client.on('connect', function () {
         console.log('Connected')
-        client.subscribe('shalizxdxd/feeds/humedad', function (err) {
+        client.subscribe(`${process.env.ADAFRUIT_USERNAME}/feeds/humedad`, function (err) {
             if (err) {
                 console.log(err)
             }
         })
 
-        client.subscribe('shalizxdxd/feeds/temperatura', function (err) {
+        client.subscribe(`${process.env.ADAFRUIT_USERNAME}/feeds/temperatura`, function (err) {
             if (err) {
                 console.log(err)
             }
@@ -44,53 +57,47 @@ const startMqttCLient = () => {
         console.log({ error })
     })
 
-    client.on('message', function (topic, message) {
-        console.log(topic, message.toString())
+    client.on('message', function (topic, messageBuffer) {
+        console.log(messageBuffer.toString())
+        handleFeeds({ max_hum, max_temp, messageBuffer, min_hum, min_temp, topic, notificationTokens })
     })
 }
+app.use(json())
 
-app.post('/change/max-temp', (req, res) => {
+
+app.post('/config', (req, res) => {
     try {
-        const { value } = req.body
-        max_temp = value
-        res.json({ message: `New Maximun Temperature is ${max_temp}` })
+        const { maxTemp, minTemp, maxHum, minHum, serverNotificationEnabled } = req.body
+        max_temp = maxTemp || max_temp;
+        min_temp = minTemp || min_temp;
+        max_hum = maxHum || max_hum;
+        min_hum = minHum || min_hum;
+        server_notification_enambled = serverNotificationEnabled || server_notification_enambled
+        res.json({ max_temp, min_temp, max_hum, min_hum, server_notification_enambled })
     } catch (error) {
         res.status(500).json(error)
     }
 
 })
 
-app.post('/change/min-temp', (req, res) => {
-    try {
-        const { value } = req.body
-        min_temp = value
-        res.json({ message: `New Minimun Temperature is ${min_temp}` })
-    } catch (error) {
-        res.status(500).json(error)
-    }
-
+app.get('/config', (req, res) => {
+    res.json({ max_temp, min_temp, max_hum, min_hum, server_notification_enambled })
 })
 
-app.post('/change/max-hum', (req, res) => {
-    try {
-        const { value } = req.body
-        vamax_humlue = value
-        res.json({ message: `New Maximun Humidity is ${max_hum}` })
-    } catch (error) {
-        res.status(500).json(error)
-    }
-
+app.post('/test/notification', (req, res) => {
+    sendNotification('Temperatura Maxima Alcanzada', `25ºC a las ${new Date}`, notificationTokens)
+    res.json({ message: "humm" })
 })
 
-app.post('/change/min-hum', (req, res) => {
-    try {
-        const { value } = req.body
-        min_hum = value
-        res.json({ message: `New Minumun Humidity is ${min_hum}` })
-    } catch (error) {
-        res.status(500).json(error)
+app.post('/register/notification/token', (req, res) => {
+    const { token } = req.body
+    if (!token) {
+        return res.status(400).send("Invalid token")
     }
-
+    if(notificationTokens.indexOf(token) < 0){
+        notificationTokens.push(token)
+    }
+    res.send("Added token successfully")
 })
 
 
