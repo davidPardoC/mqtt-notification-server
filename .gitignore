@@ -1,3 +1,4 @@
 node_modules
 .env
-google-credentials.json
+container-credentials.json
+local-google-credentials.json

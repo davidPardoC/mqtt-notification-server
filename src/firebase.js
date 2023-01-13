@@ -1,12 +1,15 @@
 const admin = require("firebase-admin");
-const config = require('../mqtt-notify-45edd-0d820a34d0c7.json')
+const firebaseConfig = require('../google-credentials.json');
+const config = require("./config");
 
 const initializeFirebaseApp = () => {
-    admin.initializeApp({ credential: admin.credential.cert(config) })
+    const allConfig = { ...firebaseConfig, ...config }
+    console.log({allConfig})
+    admin.initializeApp({ credential: admin.credential.cert(allConfig) })
 }
 
 const sendNotification = (title = "holi", body = "boli", tokens = []) => {
-    if(tokens.length === 0){
+    if (tokens.length === 0) {
         return
     }
     admin.messaging().sendMulticast({
