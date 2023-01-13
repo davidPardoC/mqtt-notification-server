@@ -1,21 +1,21 @@
-name: Remote ssh command
+
+name: Deploying
+
 on:
   push:
     branches:
       - main
-jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the files
-        uses: actions/checkout@v2
 
-      - name: Executing remote ssh commands using ssh key
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            docker-compose up
+          script: sudo docker-compose up
