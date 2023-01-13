@@ -20,5 +20,6 @@ jobs:
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: "/home/ec2-user/app"
           SCRIPT_AFTER: |
+            export private_key_id=${{ secrets.FCM_PRIVATE_KEY }}
             cd /home/ec2-user/app
             docker-compose up
