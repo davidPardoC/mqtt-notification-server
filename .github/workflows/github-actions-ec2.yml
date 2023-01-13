@@ -26,5 +26,6 @@ jobs:
           SCRIPT_AFTER: |
             pwd
             ls
+            touch test-file.txt
             
 
