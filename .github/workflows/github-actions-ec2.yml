@@ -1,30 +1,21 @@
-name: Push-to-EC2
-
+name: DEPLOY
 on:
   push:
     branches:
-      - main
+    - master
 
 jobs:
-  deploy:
-    name: Push to EC2 Instance
+  build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v1
-
-      - name: Deploy to my EC2 instance
-        uses: easingthemes/ssh-deploy@v2.1.5
-        env:
+    - uses: actions/checkout@v1
+    - name: Install npm dependencies
+      uses: easingthemes/ssh-deploy@main
+      env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.USERNAME }}
-          TARGET: "/home/ec2-user/app"
-          SCRIPT_BEFORE: ls
-          SCRIPT_AFTER: |
-            pwd
-            ls
-            touch test-file.txt
-            
+          TARGET: "/app"
 
