@@ -1,24 +1,15 @@
-name: Deploy to EC2 
-
-on: 
-  push:
-    branches:
-      - main
-
+name: Remote ssh command
+on: [push]
 jobs:
-  deploy:
-    name: Deploy to EC2 on master push
+  build:
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout the files
-        uses: actions/checkout@v2
-
-      - name: Deploy to Server
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ec2-user
-          SCRIPT_AFTER: |
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
             docker-compose up
