@@ -23,6 +23,8 @@ jobs:
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: "/home/ec2-user/app"
           SCRIPT_BEFORE: ls
-          SCRIPT_AFTER: docker-compose up
+          SCRIPT_AFTER: |
+            pwd
+            ls
             
 
