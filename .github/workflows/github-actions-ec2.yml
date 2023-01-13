@@ -5,7 +5,7 @@ on:
     - main
 
 jobs:
-  build:
+  deploy:
 
     runs-on: ubuntu-latest
 
@@ -15,8 +15,8 @@ jobs:
       uses: easingthemes/ssh-deploy@main
       env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          SOURCE: "./"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: /home/${{ secrets.USERNAME }}/app
           SCRIPT_AFTER: docker-compose up
-
