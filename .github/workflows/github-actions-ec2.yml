@@ -1,5 +1,4 @@
-
-name: Deploying
+name: Push-to-EC2
 
 on:
   push:
@@ -8,14 +7,18 @@ on:
 
 jobs:
   deploy:
-    name: Deploy
+    name: Push to EC2 Instance
     runs-on: ubuntu-latest
 
     steps:
-      - name: executing remote ssh commands using ssh key
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: docker-compose up
+      - name: Checkout the code
+        uses: actions/checkout@v1
+
+      - name: Deploy to my EC2 instance
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          SOURCE: "./"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.USERNAME }}
+          TARGET: "/home/ec2-user/app"
