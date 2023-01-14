@@ -4,7 +4,6 @@ const config = require("./config");
 
 const initializeFirebaseApp = () => {
     const allConfig = { ...firebaseConfig, ...config }
-    console.log({allConfig})
     admin.initializeApp({ credential: admin.credential.cert(allConfig) })
 }
 
