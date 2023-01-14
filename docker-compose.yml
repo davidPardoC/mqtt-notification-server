@@ -5,4 +5,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - private_key_id
+      - FCM_PRIVATE_KEY_ID
+      - FCM_PRIVATE_KEY
+      - ADAFRUIT_API_KEY
+      - ADAFRUIT_USERNAME
