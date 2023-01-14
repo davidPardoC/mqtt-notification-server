@@ -8,7 +8,7 @@ const { handleFeeds } = require("./handlers")
 dotenv.config()
 
 const app = express()
-const port = 3000 || process.env.port
+const port = 80 || process.env.port
 
 let max_temp = 40
 let min_temp = 35
