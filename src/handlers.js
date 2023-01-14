@@ -1,10 +1,11 @@
 const { sendNotification } = require("./firebase")
 
-const handleFeeds = ({ max_temp, min_temp, max_hum, min_hum, topic, messageBuffer, server_notification_enambled, notificationTokens }) => {
+const handleFeeds = ({ max_temp, min_temp, max_hum, min_hum, topic, messageBuffer, server_notification_enambled, notificationTokens, lastValue }) => {
     if (!server_notification_enambled) {
         return
     }
     const message = messageBuffer.toString()
+    lastValue[topic] = message
     if (topic.includes("temperatura")) {
         console.log('temperatura', message)
         if (Number(message) > max_temp) {

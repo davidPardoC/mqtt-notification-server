@@ -20,6 +20,8 @@ let server_notification_enambled = true
 
 const notificationTokens = []
 
+const lastValue = {}
+
 initializeFirebaseApp()
 
 const startMqttCLient = () => {
@@ -61,11 +63,18 @@ const startMqttCLient = () => {
 
     client.on('message', function (topic, messageBuffer) {
         console.log(messageBuffer.toString())
-        handleFeeds({ max_hum, max_temp, messageBuffer, min_hum, min_temp, topic, notificationTokens })
+        handleFeeds({ max_hum, max_temp, messageBuffer, min_hum, min_temp, topic, notificationTokens, lastValue })
     })
 }
 app.use(json())
 
+app.get('/status', (req, res) => {
+    res.json({ status: 'ok' })
+})
+
+app.get('/last-value', (req, res)=>{
+    res.json(lastValue)
+})
 
 app.post('/config', (req, res) => {
     try {
@@ -96,7 +105,7 @@ app.post('/register/notification/token', (req, res) => {
     if (!token) {
         return res.status(400).send("Invalid token")
     }
-    if(notificationTokens.indexOf(token) < 0){
+    if (notificationTokens.indexOf(token) < 0) {
         notificationTokens.push(token)
     }
     res.send("Added token successfully")
