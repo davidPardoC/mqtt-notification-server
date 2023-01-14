@@ -5,6 +5,7 @@ services:
     ports:
       - "80:80"
     environment:
+      - PORT=80
       - FCM_PRIVATE_KEY_ID
       - FCM_PRIVATE_KEY
       - ADAFRUIT_API_KEY

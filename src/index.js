@@ -8,7 +8,7 @@ const { handleFeeds } = require("./handlers")
 dotenv.config()
 
 const app = express()
-const port = 80 || process.env.port
+const port = process.env.PORT || 3000
 
 let max_temp = 40
 let min_temp = 35
@@ -32,6 +32,8 @@ const startMqttCLient = () => {
         password: process.env.ADAFRUIT_API_KEY,
         reconnectPeriod: 1000
     }
+
+    console.log({options})
 
     if (!options.password) {
         return
