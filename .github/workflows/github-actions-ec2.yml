@@ -21,4 +21,5 @@ jobs:
           TARGET: "/home/ec2-user/app"
           SCRIPT_AFTER: |
             cd /home/ec2-user/app
+            docker-compose up
             FCM_PRIVATE_KEY_ID=${{secrets.FCM_PRIVATE_KEY_ID}} FCM_PRIVATE_KEY=${{secrets.FCM_PRIVATE_KEY}} ADAFRUIT_API_KEY=${{secrets.ADAFRUIT_API_KEY}} ADAFRUIT_USERNAME=${{secrets.ADAFRUIT_USERNAME}} docker-compose up
