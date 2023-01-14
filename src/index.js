@@ -33,7 +33,6 @@ const startMqttCLient = () => {
         reconnectPeriod: 1000
     }
 
-    console.log({options})
 
     if (!options.password) {
         return
@@ -56,6 +55,7 @@ const startMqttCLient = () => {
     })
 
     client.on('error', (error) => {
+        console.log('There was an error?')
         console.log({ error })
     })
 
