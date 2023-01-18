@@ -8,6 +8,8 @@ const initializeFirebaseApp = () => {
 }
 
 const sendNotification = (title = "holi", body = "boli", tokens = []) => {
+    console.log('Sending notification')
+    return
     if (tokens.length === 0) {
         return
     }

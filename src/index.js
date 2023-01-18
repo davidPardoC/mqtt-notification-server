@@ -62,8 +62,7 @@ const startMqttCLient = () => {
     })
 
     client.on('message', function (topic, messageBuffer) {
-        console.log(messageBuffer.toString())
-        handleFeeds({ max_hum, max_temp, messageBuffer, min_hum, min_temp, topic, notificationTokens, lastValue })
+        handleFeeds({ max_hum, max_temp, messageBuffer, min_hum, min_temp, topic, notificationTokens, lastValue, server_notification_enambled })
     })
 }
 app.use(json())
@@ -72,7 +71,7 @@ app.get('/status', (req, res) => {
     res.json({ status: 'ok' })
 })
 
-app.get('/last-value', (req, res)=>{
+app.get('/last-value', (req, res) => {
     res.json(lastValue)
 })
 

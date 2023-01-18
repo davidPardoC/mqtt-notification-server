@@ -6,8 +6,8 @@ const handleFeeds = ({ max_temp, min_temp, max_hum, min_hum, topic, messageBuffe
     }
     const message = messageBuffer.toString()
     lastValue[topic] = message
+    console.log(topic, messageBuffer.toString())
     if (topic.includes("temperatura")) {
-        console.log('temperatura', message)
         if (Number(message) > max_temp) {
             sendNotification("Maxima temperatura alcanzada", `${message}ºC a las ${new Date()}`, notificationTokens)
         } else if (Number(message) < min_temp) {
