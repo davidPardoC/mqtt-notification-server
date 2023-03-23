@@ -4,6 +4,7 @@ const dotenv = require("dotenv")
 const { json } = require("express")
 const { initializeFirebaseApp, sendNotification } = require("./firebase")
 const { handleFeeds } = require("./handlers")
+const version = 1
 
 dotenv.config()
 
@@ -112,6 +113,6 @@ app.post('/register/notification/token', (req, res) => {
 
 
 app.listen(port, () => {
-    console.log(`Server is running in port ${port}`)
+    console.log(`Server is running in port ${port}, version ${version}`)
     startMqttCLient()
 })
